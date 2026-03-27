@@ -3,7 +3,7 @@
   "package": {
     "id": "miniteam",
     "display_name": "MiniTeam",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Compact multi-role software delivery agents with shared skills.",
     "author": {
       "name": "zzj",

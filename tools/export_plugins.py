@@ -161,6 +161,23 @@ def copy_shared_rules(target_root: Path) -> None:
     shutil.copytree(RULES_DIR, target_root / "rules", dirs_exist_ok=True)
 
 
+def copy_cursor_rules(target_root: Path) -> None:
+    if not RULES_DIR.is_dir():
+        return
+
+    rules_target = target_root / "rules"
+    rules_target.mkdir(parents=True, exist_ok=True)
+    seen_names: set[str] = set()
+
+    for source_path in sorted(RULES_DIR.rglob("*.mdc")):
+        relative_parts = source_path.relative_to(RULES_DIR).parts
+        flattened_name = "-".join(relative_parts)
+        if flattened_name in seen_names:
+            raise ValidationError(f"Duplicate flattened Cursor rule filename: {flattened_name}")
+        seen_names.add(flattened_name)
+        shutil.copy2(source_path, rules_target / flattened_name)
+
+
 def build_optional_metadata(package: dict[str, Any]) -> dict[str, Any]:
     author = package.get("author") or {}
     metadata: dict[str, Any] = {
@@ -185,7 +202,7 @@ def export_cursor(package: dict[str, Any], agents: list[dict[str, Any]], output_
     plugin_root.mkdir(parents=True, exist_ok=True)
     agents_dir = plugin_root / "agents"
     copy_shared_skills(plugin_root)
-    copy_shared_rules(plugin_root)
+    copy_cursor_rules(plugin_root)
 
     plugin_manifest: dict[str, Any] = {
         "name": package["display_name"],
