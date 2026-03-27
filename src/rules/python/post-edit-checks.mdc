@@ -1,0 +1,20 @@
+---
+description: Python post-edit validation rule. Apply this after Python changes to choose the minimum reliable validation sequence before handing work forward.
+globs:
+  - "**/*.py"
+  - "**/*.pyi"
+---
+# Python Post-Edit Checks Rule
+
+After meaningful Python edits, prefer this order:
+
+1. formatting (`black`, `isort`, or project formatter)
+2. linting (`ruff` or project linter)
+3. type checks (`mypy`, `pyright`, or project type checker) when typing matters
+4. targeted pytest runs for changed modules
+5. broader pytest runs for shared or risky changes
+6. coverage when requested or already part of project policy
+
+## Minimum handoff bar
+
+`coder` should not hand Python work to `runner` while the code is obviously unformatted, syntactically broken, or inconsistent with the local toolchain.

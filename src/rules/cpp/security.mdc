@@ -1,0 +1,33 @@
+---
+description: C++ security rule for C++ and CMake work. Apply this when code touches memory ownership, subprocesses, filesystem boundaries, parsing, or externally controlled input.
+globs:
+  - "**/*.cpp"
+  - "**/*.hpp"
+  - "**/*.cc"
+  - "**/*.hh"
+  - "**/*.cxx"
+  - "**/*.h"
+  - "**/CMakeLists.txt"
+---
+# C++ Security Rule
+
+## Memory and ownership
+
+- Prefer RAII and smart pointers.
+- Avoid unsafe ownership transfer through raw pointers or references.
+- Be explicit about lifetime assumptions.
+
+## Dangerous areas
+
+- validate bounds and sizes before indexing or copying
+- avoid unsafe C string functions
+- treat parser input, filesystem paths, and command arguments as hostile
+- avoid shell interpolation where direct process argument APIs exist
+- be cautious with concurrency and shared mutable state
+
+## Helpful tools
+
+If the repo supports them, prefer:
+- `clang-tidy`
+- `cppcheck`
+- sanitizers (ASan, UBSan, TSan)

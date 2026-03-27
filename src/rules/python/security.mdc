@@ -1,0 +1,29 @@
+---
+description: Python security rule for .py and .pyi work. Apply this when Python code handles files, subprocesses, web input, databases, serialization, or secrets.
+globs:
+  - "**/*.py"
+  - "**/*.pyi"
+---
+# Python Security Rule
+
+## Secrets and config
+
+- Read secrets from environment variables or approved config sources.
+- Never commit credentials in code, tests, fixtures, or examples.
+
+## Dangerous areas
+
+- avoid `eval` and `exec` unless explicitly justified and constrained
+- validate file paths before reading or writing
+- avoid unsafe deserialization
+- use parameterized database access
+- sanitize shell arguments and prefer argument arrays over interpolated shell strings
+
+## Helpful tools
+
+If the repo supports them, prefer:
+- `bandit`
+- `pip-audit`
+- `safety`
+
+Use them when the task touches security-relevant code or dependencies.

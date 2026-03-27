@@ -1,0 +1,45 @@
+---
+description: Python-specific coding rule for .py and .pyi work. Apply this when writing, refactoring, or reviewing Python code. Pair with the `python-patterns` skill for implementation details.
+globs:
+  - "**/*.py"
+  - "**/*.pyi"
+---
+# Python Coding Style Rule
+
+This rule extends the common coding rules for Python work.
+
+## Required skill
+
+When implementing or substantially modifying Python code, use the `python-patterns` skill.
+
+## Core expectations
+
+- Follow PEP 8 and existing project conventions.
+- Add type annotations to public functions and important internal helpers.
+- Prefer standard-library tools and simple abstractions before adding dependencies.
+- Prefer explicit context managers for resource handling.
+- Use dataclasses, named tuples, protocols, or typed containers where they improve clarity.
+- Prefer generators for large or streaming data.
+
+## Error handling
+
+- Catch specific exceptions, not bare `except`.
+- Chain exceptions when converting low-level failures into domain errors.
+- Never return silent `None` or fallback values that hide real faults.
+
+## Structure
+
+- Keep module layout readable.
+- Separate pure logic from I/O and side effects where practical.
+- Avoid import-time side effects.
+- Keep testability in mind when designing interfaces.
+
+## Tooling defaults
+
+Prefer project-supported tools such as:
+- `black`
+- `isort`
+- `ruff`
+- `mypy` or `pyright`
+
+Use the repository's actual toolchain when it differs.

@@ -1,0 +1,39 @@
+---
+alwaysApply: true
+---
+
+# Common Security Rule
+
+Security checks are part of normal delivery, not optional polish.
+
+## Mandatory defaults
+
+- Never hardcode secrets, tokens, passwords, or private keys.
+- Use environment variables, secret stores, or project-approved secure configuration.
+- Validate external input before use.
+- Avoid logging secrets or sensitive personal data.
+- Do not expose internal stack traces or sensitive system details in user-facing output.
+
+## Secure coding expectations
+
+- Prefer parameterized queries over string-built queries.
+- Treat HTML, shell input, file paths, and serialized content as attack surfaces.
+- Apply least privilege when choosing file access, process execution, and network behavior.
+- Avoid unsafe deserialization and unsafe dynamic execution unless explicitly required and constrained.
+
+## Response protocol
+
+If a likely security problem is discovered:
+1. stop expanding feature work
+2. isolate the issue
+3. fix the issue or reduce the blast radius
+4. report the risk clearly in the handoff
+5. avoid documenting insecure behavior as acceptable
+
+## Special caution areas
+
+- auth and permission checks
+- filesystem writes and path handling
+- shell command construction
+- SQL and template rendering
+- dependency additions with network or code execution implications

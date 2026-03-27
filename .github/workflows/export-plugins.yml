@@ -1,0 +1,102 @@
+name: Export Plugins
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - "src/**"
+      - "tools/export_plugins.py"
+      - "README.md"
+      - ".github/workflows/export-plugins.yml"
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Export all targets
+        run: python tools/export_plugins.py
+
+      - name: Read package metadata
+        id: package_meta
+        shell: bash
+        run: |
+          PACKAGE_ID=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path("src/agents.json").read_text(encoding="utf-8"))
+          print(data["package"]["id"])
+          PY
+          )
+          PACKAGE_VERSION=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path("src/agents.json").read_text(encoding="utf-8"))
+          print(data["package"]["version"])
+          PY
+          )
+          echo "package_id=$PACKAGE_ID" >> "$GITHUB_OUTPUT"
+          echo "package_version=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Upload Cursor artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cursor-plugin
+          path: dist/cursor
+
+      - name: Upload Claude Code artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: claude-code-plugin
+          path: dist/claude-code
+
+      - name: Create release archives
+        if: github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          mkdir -p release
+          PACKAGE_ID="${{ steps.package_meta.outputs.package_id }}"
+          PACKAGE_VERSION="${{ steps.package_meta.outputs.package_version }}"
+          (
+            cd dist/cursor
+            zip -r "../../release/${PACKAGE_ID}-cursor-v${PACKAGE_VERSION}.zip" "${PACKAGE_ID}"
+          )
+          (
+            cd dist/claude-code
+            zip -r "../../release/${PACKAGE_ID}-claude-code-v${PACKAGE_VERSION}.zip" "${PACKAGE_ID}"
+          )
+
+      - name: Publish GitHub release
+        if: github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          PACKAGE_ID="${{ steps.package_meta.outputs.package_id }}"
+          PACKAGE_VERSION="${{ steps.package_meta.outputs.package_version }}"
+          RELEASE_TAG="release-v${PACKAGE_VERSION}"
+          RELEASE_TITLE="${PACKAGE_ID} v${PACKAGE_VERSION}"
+
+          if gh release view "${RELEASE_TAG}" >/dev/null 2>&1; then
+            gh release upload "${RELEASE_TAG}" release/*.zip --clobber
+            gh release edit "${RELEASE_TAG}" --title "${RELEASE_TITLE}" --latest
+          else
+            gh release create "${RELEASE_TAG}" release/*.zip \
+              --title "${RELEASE_TITLE}" \
+              --generate-notes \
+              --latest \
+              --target "${GITHUB_SHA}"
+          fi

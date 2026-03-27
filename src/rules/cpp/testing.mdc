@@ -1,0 +1,56 @@
+---
+description: C++ testing rule for .cpp/.hpp/.cc/.hh/.cxx/.h and CMake work. Apply this when validating C++ behavior, creating regression tests, or debugging failing C++ tests. Pair with the `cpp-testing` skill.
+globs:
+  - "**/*.cpp"
+  - "**/*.hpp"
+  - "**/*.cc"
+  - "**/*.hh"
+  - "**/*.cxx"
+  - "**/*.h"
+  - "**/CMakeLists.txt"
+---
+# C++ Testing Rule
+
+This rule extends the common testing rules for C++ work.
+
+## Required skill
+
+When writing or updating C++ tests, configuring test execution, or validating C++ behavior, use the `cpp-testing` skill.
+
+## Framework default
+
+- Prefer GoogleTest / GoogleMock with CMake / CTest when the project supports it.
+- Follow the repository's existing test harness if it already uses another standard.
+
+## Test design
+
+- Keep tests deterministic and isolated.
+- Prefer dependency injection over globals.
+- Use fixtures for shared setup.
+- Use mocks for interaction verification and fakes for stateful substitutes.
+- Separate unit and integration scopes where practical.
+
+## Typical commands
+
+Use commands that fit the repository, such as:
+```bash
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
+cmake --build build -j
+ctest --test-dir build --output-on-failure
+ctest --test-dir build -R NamePattern --output-on-failure
+./build/example_tests --gtest_filter=Suite.Name
+```
+
+## Sanitizers and coverage
+
+When supported or required:
+- run ASan / UBSan / TSan as appropriate
+- run coverage using project-supported GCC or Clang flow
+
+## Reporting
+
+`runner` should state:
+- build config used
+- tests executed
+- sanitizer status
+- whether failures look like logic bugs, flaky tests, or environment issues

@@ -1,0 +1,45 @@
+---
+alwaysApply: true
+---
+
+# Common Coding Style Rule
+
+Apply these defaults across the repository regardless of language.
+
+## Design defaults
+
+- Prefer clear, direct implementations over clever ones.
+- Favor small, cohesive files and functions.
+- Keep responsibilities narrow and local.
+- Avoid hidden side effects and surprising mutations.
+- Prefer configuration, constants, and named abstractions over hardcoded literals.
+
+## Maintainability defaults
+
+- Use descriptive names that encode intent.
+- Keep functions focused on a single logical operation.
+- Extract repeated logic instead of copying blocks.
+- Prefer explicit data flow over implicit global state.
+- Preserve existing project conventions unless there is a clear benefit to changing them.
+
+## Error handling
+
+- Handle expected failure modes explicitly.
+- Never swallow exceptions or status failures silently.
+- Surface user-facing errors in a readable form.
+- Keep internal diagnostic detail available for debugging.
+
+## Boundary discipline
+
+- Validate external inputs at system boundaries.
+- Treat API responses, file content, user input, and environment state as untrusted.
+- Fail early when invariants are broken.
+
+## Quality checklist
+
+Before handing code to `runner`, `coder` should ensure:
+- names are clear
+- control flow is understandable
+- no dead code or leftover debug scaffolding remains
+- no secrets are hardcoded
+- no new dependency or config requirement is undocumented

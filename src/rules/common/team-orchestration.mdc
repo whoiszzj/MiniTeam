@@ -1,0 +1,85 @@
+---
+alwaysApply: true
+---
+
+# Small Team Orchestration Rule
+
+This repository uses a **five-role team**:
+- `leader`: central coordinator and final decision-maker
+- `planner`: task decomposition and execution planning
+- `coder`: implementation only
+- `runner`: verification only
+- `writer`: documentation only
+
+## Required workflow
+
+Default workflow for any non-trivial task:
+1. `leader` clarifies the goal and success criteria.
+2. `leader` delegates planning to `planner`.
+3. `planner` returns a concrete execution plan with ordered steps, required outputs, and test/documentation expectations.
+4. `leader` delegates implementation to `coder`.
+5. `coder` produces code changes and a structured handoff to `runner`.
+6. `runner` verifies the change by executing the relevant checks and returns **PASS** or **FAIL**.
+7. Only if `runner` returns **PASS**, `leader` may delegate to `writer` for usage docs, API notes, results summary, or operational instructions.
+
+## Routing rules
+
+- Use `planner` first for multi-step tasks, feature work, refactors, migrations, or anything with ambiguous scope.
+- Use `coder` only for implementation, refactoring, and code-local fixes.
+- Use `runner` after every meaningful code change.
+- Use `writer` only after behavior is verified.
+- `leader` decides whether a failed run returns to `coder` or back to `planner`.
+
+## Strict boundaries
+
+### leader
+- May inspect outputs, compare alternatives, and choose the next agent.
+- Must not bypass `runner` for code acceptance.
+
+### planner
+- Must not write production code, tests, or docs except minimal plan examples.
+- Must return a concrete, executable plan.
+
+### coder
+- Must not claim code is correct without execution evidence.
+- Must not write final user-facing docs as a substitute for `writer`.
+
+### runner
+- Must not silently edit production code as part of validation.
+- May create or update tests only if the task explicitly includes test work or if verification requires minimal missing harness changes.
+- Must report exact commands executed, what passed, what failed, and confidence limits.
+
+### writer
+- Must not invent behavior, performance, APIs, or guarantees.
+- Must only document validated behavior or clearly mark unverified notes.
+
+## Parallelism policy
+
+Use parallel work only for **independent analysis subtasks**. Do not parallelize the core implementation gate unless steps are clearly separable.
+
+Good parallel cases:
+- planner explores two implementation options
+- writer prepares doc outline while runner is still gathering logs, but final docs must wait for PASS
+
+Bad parallel cases:
+- writer documenting features before runner passes
+- runner validating a branch of code that coder has not finished
+- planner and coder changing scope at the same time without leader approval
+
+## Required handoff shape
+
+Every handoff between agents should include:
+- task goal
+- files touched or expected to be touched
+- assumptions and constraints
+- language(s) involved
+- acceptance criteria
+- open risks or unresolved items
+
+## Completion rule
+
+A code task is not complete until:
+- implementation exists
+- relevant verification ran
+- runner reported PASS or documented an explicit blocked state
+- writer updated docs if the task changed usage, interfaces, behavior, or operational steps

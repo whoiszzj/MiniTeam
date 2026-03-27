@@ -1,0 +1,59 @@
+---
+alwaysApply: true
+---
+
+# Common Testing Rule
+
+This team treats verification as mandatory, but test depth should match task scope.
+
+## Verification baseline
+
+Every meaningful code change must be verified by `runner`.
+Verification may include one or more of:
+- unit tests
+- integration tests
+- end-to-end checks
+- static analysis
+- type checks
+- build validation
+- targeted reproduction scripts
+
+## Test depth policy
+
+### Always expected
+- at least one relevant verification step for every code change
+- reproduction of the bug before fixing it, when practical
+- focused checks first, broader checks second
+
+### Usually expected
+- unit tests for new logic or bug fixes
+- integration tests when boundaries between modules, I/O, databases, subprocesses, or services are involved
+
+### Conditionally expected
+- end-to-end tests only for critical user flows, pipelines, or interface-level guarantees
+- coverage measurement when the repository already supports it or when the task explicitly asks for it
+
+## TDD policy
+
+Prefer test-first work for new behavior and bug fixes.
+Use a practical version of RED → GREEN → REFACTOR when it improves reliability.
+Do not block small operational fixes on ceremonial test-first steps if a faster, well-verified path is more appropriate.
+
+## Failure handling
+
+If tests fail, `runner` must identify whether the likely cause is:
+- implementation defect
+- stale or incorrect test
+- broken environment or harness
+- incomplete plan or wrong scope
+
+Then `leader` decides whether work returns to `coder` or `planner`.
+
+## Reporting requirements
+
+`runner` should report:
+- commands executed
+- scope of verification
+- PASS / FAIL / BLOCKED
+- failing tests or errors
+- what remains unverified

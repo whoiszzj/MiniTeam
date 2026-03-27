@@ -1,0 +1,43 @@
+---
+description: C++-specific coding rule for .cpp/.hpp/.cc/.hh/.cxx/.h and CMake work. Apply this when implementing, refactoring, or reviewing modern C++ code. Pair with the `cpp-coding-standards` skill.
+globs:
+  - "**/*.cpp"
+  - "**/*.hpp"
+  - "**/*.cc"
+  - "**/*.hh"
+  - "**/*.cxx"
+  - "**/*.h"
+  - "**/CMakeLists.txt"
+---
+# C++ Coding Style Rule
+
+This rule extends the common coding rules for C++ work.
+
+## Required skill
+
+When implementing or substantially modifying C++ code, use the `cpp-coding-standards` skill.
+
+## Core expectations
+
+- Prefer modern C++ (C++17/20 or project standard) over C-style patterns.
+- Use RAII for resource ownership.
+- Avoid raw `new`/`delete` in normal application code.
+- Prefer `std::unique_ptr` for exclusive ownership and `std::shared_ptr` only when ownership is truly shared.
+- Prefer `const`, `constexpr`, and strong typing where appropriate.
+- Prefer explicit interfaces and low-ambiguity ownership semantics.
+
+## API design
+
+- Return values instead of output parameters when reasonable.
+- Use `std::string_view`, spans, references, and value semantics deliberately.
+- Mark single-argument constructors `explicit` unless implicit conversion is intended.
+- Use `override` and correct virtual destructor behavior for polymorphic hierarchies.
+
+## Tooling defaults
+
+Prefer project-supported tools such as:
+- `clang-format`
+- `clang-tidy`
+- `cmake`
+
+Use the repository's actual build conventions when they differ.

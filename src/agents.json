@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "package": {
+    "id": "miniteam",
+    "display_name": "MiniTeam",
+    "version": "0.1.0",
+    "description": "Compact multi-role software delivery agents with shared skills.",
+    "author": {
+      "name": "zzj",
+      "email": "whoiszzj@outlook.com",
+      "url": "https://github.com/whoiszzj"
+    },
+    "homepage": "https://github.com/whoiszzj/MiniTeam",
+    "repository": "https://github.com/whoiszzj/MiniTeam",
+    "license": "MIT",
+    "keywords": [
+      "agents",
+      "workflow",
+      "coding",
+      "team"
+    ]
+  },
+  "agents": [
+    {
+      "id": "planner",
+      "name": "planner",
+      "model": "claude-4.6-opus-high-thinking",
+      "description": "Create the execution plan for the small-team workflow. Invoke this agent first for most non-trivial tasks, before coder, runner, or writer. This agent must always apply the `team-contract` skill before producing its plan. Use it when the request needs decomposition, role assignment, acceptance criteria, or a decision about whether the path is coder -> runner -> writer, coder -> runner, writer-only, or replan. Do not use it for implementation, test execution, or final documentation authoring.",
+      "readonly": true,
+      "prompt_file": "./prompts/planner.md",
+      "claude_code": {
+        "model": "opus",
+        "tools": [
+          "Read",
+          "Grep",
+          "Glob",
+          "Bash"
+        ],
+        "skills": [
+          "team-contract"
+        ],
+        "effort": "high"
+      }
+    },
+    {
+      "id": "coder",
+      "name": "coder",
+      "model": "gpt-5.3-codex",
+      "description": "Implement approved code changes from leader or planner. Usually invoke this agent after planner. This agent must always apply `team-contract`, then select language-specific implementation skills before editing code: use `python-patterns` for Python, `cpp-coding-standards` for C++, and also apply the matching testing skill when creating or updating tests (`python-testing` or `cpp-testing`). Its normal downstream path is runner for executable validation; if the plan is broken, incomplete, or contradicted by the codebase, return to leader with a recommendation to replan. Use it for code edits, refactors required by the task, config changes tied to implementation, and targeted test additions. Do not use it for final acceptance or end-user documentation.",
+      "readonly": false,
+      "prompt_file": "./prompts/coder.md",
+      "claude_code": {
+        "model": "sonnet",
+        "tools": [
+          "Read",
+          "Write",
+          "Edit",
+          "MultiEdit",
+          "Grep",
+          "Glob",
+          "LS",
+          "Bash"
+        ],
+        "skills": [
+          "team-contract",
+          "python-patterns",
+          "cpp-coding-standards",
+          "python-testing",
+          "cpp-testing"
+        ],
+        "effort": "high"
+      }
+    },
+    {
+      "id": "runner",
+      "name": "runner",
+      "model": "gpt-5.3-codex",
+      "description": "Validate implementation with executed evidence. Usually invoke this agent after coder and before writer. This agent must always apply `team-contract`, then select language-specific verification skills before deciding pass or fail: use `python-testing` for Python validation and `cpp-testing` for C++ validation. When code spans both languages, validate each language path explicitly and report combined status. Use it for tests, builds, scripts, runtime checks, and pass/fail decisions. If implementation fails, the usual path is back to leader -> coder; if the task fails because the plan is wrong or the environment blocks execution, return to leader with a recommendation to replan via planner. Do not use it to edit implementation files or write final docs.",
+      "readonly": false,
+      "prompt_file": "./prompts/runner.md",
+      "claude_code": {
+        "model": "sonnet",
+        "tools": [
+          "Read",
+          "Grep",
+          "Glob",
+          "LS",
+          "Bash"
+        ],
+        "skills": [
+          "team-contract",
+          "python-testing",
+          "cpp-testing"
+        ],
+        "effort": "high"
+      }
+    },
+    {
+      "id": "writer",
+      "name": "writer",
+      "model": "gpt-5.4-medium",
+      "description": "Write user-facing project documentation from verified results. Usually invoke this agent after runner succeeds. This agent must always apply `team-contract` and `docs-standards` before writing documentation. A direct planner -> writer path is allowed only for documentation-only tasks that do not require code changes or executable validation. Use it for README updates, usage notes, API or interface docs, examples, result summaries, and delivery notes. Do not use it to invent behavior, validate code, or replace runner.",
+      "readonly": false,
+      "prompt_file": "./prompts/writer.md",
+      "claude_code": {
+        "model": "sonnet",
+        "tools": [
+          "Read",
+          "Write",
+          "Edit",
+          "MultiEdit",
+          "Grep",
+          "Glob",
+          "LS"
+        ],
+        "skills": [
+          "team-contract",
+          "docs-standards"
+        ],
+        "effort": "medium"
+      }
+    }
+  ]
+}

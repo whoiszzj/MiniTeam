@@ -1,0 +1,27 @@
+---
+alwaysApply: true
+---
+
+# Post-Edit Checks Rule
+
+After code edits, verification should proceed from cheap checks to expensive checks.
+
+## General order
+
+1. format or style checks
+2. static analysis or linting
+3. type checks if applicable
+4. targeted tests for changed area
+5. broader tests if risk justifies it
+6. coverage or sanitizer runs if already supported or explicitly requested
+
+## Scope discipline
+
+- Start narrow after a small change.
+- Widen validation after structural changes, interface changes, or shared-library changes.
+- Do not claim success based only on formatting.
+
+## Handoff discipline
+
+Before `coder` hands off to `runner`, the code should be in a runnable state.
+Before `writer` receives work, `runner` should already have produced a verification verdict.

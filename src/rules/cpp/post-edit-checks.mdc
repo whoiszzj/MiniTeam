@@ -1,0 +1,26 @@
+---
+description: C++ post-edit validation rule. Apply this after C++ or CMake changes to choose the minimum reliable validation sequence before handing work forward.
+globs:
+  - "**/*.cpp"
+  - "**/*.hpp"
+  - "**/*.cc"
+  - "**/*.hh"
+  - "**/*.cxx"
+  - "**/*.h"
+  - "**/CMakeLists.txt"
+---
+# C++ Post-Edit Checks Rule
+
+After meaningful C++ edits, prefer this order:
+
+1. formatting (`clang-format` or project formatter)
+2. static analysis (`clang-tidy`, `cppcheck`, or project checker) when available
+3. configure or regenerate build files if needed
+4. incremental build
+5. targeted test execution
+6. broader `ctest` run for risky or shared changes
+7. sanitizer or coverage runs when supported and justified
+
+## Minimum handoff bar
+
+`coder` should not hand C++ work to `runner` while the code is obviously unformatted, uncompilable due to local edit errors, or inconsistent with the active build system.

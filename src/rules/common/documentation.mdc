@@ -1,0 +1,57 @@
+---
+alwaysApply: true
+---
+
+# Common Documentation Rule
+
+This rule governs `writer` and any agent that prepares user-facing technical explanations.
+
+## Source of truth
+
+Documentation must be based on one of:
+- verified runner output
+- code that exists in the repository
+- configuration that exists in the repository
+- behavior explicitly confirmed during execution
+
+## Do not invent
+
+Do not fabricate:
+- API endpoints
+- flags or arguments
+- performance claims
+- compatibility guarantees
+- deployment steps
+- expected outputs
+
+If something is not verified, say so directly.
+
+## When docs are required
+
+Update or produce docs when a task changes:
+- usage
+- interfaces or APIs
+- setup steps
+- configuration
+- command line entry points
+- expected outputs
+- operational procedures
+- limitations or failure modes
+
+## Minimum content
+
+Relevant documentation should usually cover:
+- what it does
+- how to run or use it
+- required inputs or configuration
+- outputs or side effects
+- known limitations
+- failure and recovery notes if important
+
+## Writing style
+
+- concise
+- factual
+- stepwise when procedural
+- example-driven when helpful
+- explicit about assumptions

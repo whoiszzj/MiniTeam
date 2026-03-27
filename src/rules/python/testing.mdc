@@ -1,0 +1,52 @@
+---
+description: Python testing rule for .py and .pyi work. Apply this when validating Python behavior, adding regression coverage, or diagnosing failing Python tests. Pair with the `python-testing` skill.
+globs:
+  - "**/*.py"
+  - "**/*.pyi"
+---
+# Python Testing Rule
+
+This rule extends the common testing rules for Python work.
+
+## Required skill
+
+When writing or updating Python tests, or validating Python behavior, use the `python-testing` skill.
+
+## Framework default
+
+- Prefer `pytest`.
+- Use existing repository test tooling if already established.
+
+## Test design
+
+- Prefer focused tests with descriptive names.
+- Use fixtures to remove duplication.
+- Use parametrization for systematic input coverage.
+- Mock external systems, not your own business logic.
+- Cover edge cases, exception paths, and boundary values.
+
+## Typical commands
+
+Use commands that fit the repository, such as:
+```bash
+pytest
+pytest -q
+pytest path/to/test_file.py
+pytest -k keyword
+pytest --maxfail=1 --disable-warnings
+pytest --cov=src --cov-report=term-missing
+```
+
+## Async and side-effect testing
+
+- Use `pytest.mark.asyncio` or project-standard async support for async code.
+- Use `tmp_path` or temporary resources for filesystem work.
+- Avoid network-dependent unit tests.
+
+## Reporting
+
+`runner` should state:
+- which pytest scope ran
+- whether failures are deterministic
+- whether coverage was measured
+- what still lacks validation

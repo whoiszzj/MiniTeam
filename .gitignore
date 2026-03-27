@@ -1,0 +1,48 @@
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor settings
+.cursor/
+.idea/
+.vscode/
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.hypothesis/
+.mypy_cache/
+.nox/
+.pyre/
+.pytest_cache/
+.ruff_cache/
+.tox/
+
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Test and coverage outputs
+.coverage
+.coverage.*
+htmlcov/
+
+# Local runtime, temp files, and logs
+.runtime/
+**/.runtime/
+tmp/
+temp/
+*.log
+
+# Build and release outputs
+release/
+dist/
+
+# Local environment files
+.env
+.env.*
